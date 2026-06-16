@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getSessionDetails } from "@/lib/services/auth.service";
 import { createClient } from "@/lib/supabase/server";
+import { updateUserEmailAction, resetUserPasswordAction } from "./actions"; // Import de l'action pour modifier l'email et réinitialiser le mot de passe
+import { EditUserButton } from "./edit-user-button";
 
 // IMPORT CORRIGÉ : On utilise bien banUserAction ici !
 import { deleteUserAction, banUserAction, unbanUserAction } from "./actions";
@@ -151,6 +153,10 @@ export default async function AdminPage() {
                                             <td className="p-4 text-right">
                                                 {p.role !== 'admin' && (
                                                     <div className="flex items-center justify-end gap-2">
+                                                        
+                                                        {/* Le bouton Modifier que l'on vient de créer */}
+                                                        <EditUserButton user={p} />
+
                                                         {isCurrentlyBanned ? (
                                                             <form action={unbanUserAction.bind(null, p.id)}>
                                                                 <Button type="submit" size="sm" variant="outline" className="text-green-600 border-green-200 hover:bg-green-50">
@@ -159,20 +165,12 @@ export default async function AdminPage() {
                                                             </form>
                                                         ) : (
                                                             <form action={banUserAction.bind(null, p.id)} className="flex items-center gap-2">
-                                                                <select 
-                                                                    name="duration" 
-                                                                    className="h-8 text-xs border rounded-md px-2 bg-background text-foreground"
-                                                                >
-                                                                    <option value="2">2 Heures</option>
-                                                                    <option value="24">24 Heures</option>
-                                                                    <option value="48">48 Heures</option>
-                                                                    <option value="168">7 Jours</option>
+                                                                <select name="duration" className="h-8 text-xs border rounded-md px-2 bg-background text-foreground">
+                                                                    <option value="2">2H</option>
+                                                                    <option value="24">24H</option>
+                                                                    <option value="168">7J</option>
                                                                 </select>
-                                                                <Button 
-                                                                    type="submit" 
-                                                                    size="sm" 
-                                                                    className="bg-orange-500 hover:bg-orange-600 text-white border-none"
-                                                                >
+                                                                <Button type="submit" size="sm" className="bg-orange-500 hover:bg-orange-600 text-white border-none">
                                                                     Bloquer
                                                                 </Button>
                                                             </form>
