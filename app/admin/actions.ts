@@ -49,3 +49,80 @@ export async function unbanUserAction(userId: string) {
   await supabaseAdmin.auth.admin.updateUserById(userId, { ban_duration: "none" });
   revalidatePath("/admin");
 }
+
+// Action pour modifier l'email d'un utilisateur
+export async function updateUserEmailAction(userId: string, formData: FormData) {
+  const newEmail = formData.get("newEmail") as string;
+  if (!newEmail) return;
+
+  const supabaseAdmin = getAdminClient();
+  
+  // 1. Modifier l'email dans l'authentification Supabase
+  const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(userId, { 
+    email: newEmail,
+    email_confirm: true // Force la confirmation pour ne pas bloquer l'utilisateur
+  });
+  if (authError) throw new Error(authError.message);
+
+  // 2. Modifier l'email dans le profil public
+  const { error: dbError } = await supabaseAdmin
+    .from("profiles")
+    .update({ email: newEmail })
+    .eq("id", userId);
+  if (dbError) throw new Error(dbError.message);
+
+  revalidatePath("/admin");
+}
+
+// Action pour forcer un nouveau mot de passe
+export async function resetUserPasswordAction(userId: string, formData: FormData) {
+  const newPassword = formData.get("newPassword") as string;
+  if (!newPassword || newPassword.length < 6) {
+    throw new Error("Le mot de passe doit faire au moins 6 caractères.");
+  }
+
+  const supabaseAdmin = getAdminClient();
+  
+  // Modifie directement le mot de passe sans demander l'ancien
+  const { error } = await supabaseAdmin.auth.admin.updateUserById(userId, { 
+    password: newPassword 
+  });
+  
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/admin");
+}
+// Action pour tout modifier d'un coup depuis la modale
+export async function updateUserDetailsAction(userId: string, formData: FormData) {
+  const email = formData.get("email") as string;
+  const name = formData.get("name") as string;
+  const first_name = formData.get("first_name") as string;
+  const password = formData.get("password") as string;
+
+  const supabaseAdmin = getAdminClient();
+
+  // 1. Mise à jour de l'authentification (email / mdp)
+  const authUpdates: any = {};
+  if (email) {
+    authUpdates.email = email;
+    authUpdates.email_confirm = true; // On valide l'email auto
+  }
+  if (password && password.length >= 6) {
+    authUpdates.password = password;
+  }
+
+  if (Object.keys(authUpdates).length > 0) {
+    const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(userId, authUpdates);
+    if (authError) throw new Error(authError.message);
+  }
+
+  // 2. Mise à jour du profil public (nom, prénom, email)
+  const { error: dbError } = await supabaseAdmin
+    .from("profiles")
+    .update({ email, name, first_name })
+    .eq("id", userId);
+
+  if (dbError) throw new Error(dbError.message);
+
+  revalidatePath("/admin");
+}
