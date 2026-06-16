@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getSessionDetails } from "@/lib/services/auth.service";
+import { BackupButton } from "@/components/BackupButton";
 import { createClient } from "@/lib/supabase/server";
 
 // IMPORT CORRIGÉ : On utilise bien banUserAction ici !
@@ -66,6 +67,8 @@ export default async function AdminPage() {
                     <Button className="justify-start" variant="outline">Gérer les lieux (Places)</Button>
                     <Button className="justify-start" variant="outline">Gérer les utilisateurs</Button>
                     <Button className="justify-start" variant="outline">Consulter les logs système</Button>
+                    <Button className="justify-start text-destructive hover:bg-destructive/10" variant="outline">Gérer les bannissements</Button>
+                    <BackupButton />
                     <Button className="justify-start" variant="outline">Gérer les bannissements</Button>
                 </CardContent>
             </Card>
