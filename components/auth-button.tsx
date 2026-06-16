@@ -61,7 +61,7 @@ export async function AuthButton() {
         
         {role === 'admin' && (
           <DropdownMenuItem asChild>
-            <Link href="/admin" className="cursor-pointer w-full font-bold text-primary">Espace administrateur</Link>
+            <Link href="/admin" className="cursor-pointer w-full text-primary">Espace administrateur</Link>
           </DropdownMenuItem>
         )}
 

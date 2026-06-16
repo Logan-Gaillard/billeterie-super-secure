@@ -51,8 +51,16 @@ export async function EventList() {
             </div>
             <CardHeader>
               <div className="flex justify-between items-start mb-2">
-                <Badge variant="outline" className="text-[10px] uppercase tracking-widest">{event.organizer}</Badge>
-                <span className="font-black text-primary">{minPrice > 0 ? `Dès ${minPrice}€` : "Gratuit"}</span>
+                {event.organizer ? (
+                  <Badge variant="outline" className="text-[10px] uppercase tracking-widest">{event.organizer}</Badge>
+                ) : (
+                  <div />
+                )}
+                <span className="font-black text-primary">
+                  {minPrice > 0 
+                    ? `Dès ${new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(minPrice)}` 
+                    : "Gratuit"}
+                </span>
               </div>
               <CardTitle className="text-xl font-bold line-clamp-1">{event.title}</CardTitle>
               <CardDescription className="line-clamp-2 min-h-[40px]">

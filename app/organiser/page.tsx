@@ -8,10 +8,9 @@ import { Button } from "@/components/ui/button";
 import { getSessionDetails } from "@/lib/services/auth.service";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { createPlaceAction } from "@/lib/actions/organization.actions";
 import { EventFormModal } from "@/components/event-form-modal";
 import { MapPin, Calendar, TrendingUp, Users, Wallet, Plus } from "lucide-react";
+import { AddPlaceForm } from "@/components/add-place-form";
 
 export default async function OrganiserPage() {
   const { user, profile } = await getSessionDetails();
@@ -175,23 +174,7 @@ export default async function OrganiserPage() {
                         <CardDescription>Si votre salle n'est pas encore listée</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form action={createPlaceAction} className="flex flex-col gap-4">
-                            <div className="grid gap-1.5">
-                                <Label htmlFor="name" className="text-xs">Nom du lieu</Label>
-                                <Input id="name" name="name" placeholder="Ex: Zenith de Paris" className="bg-muted/20 border-none" required />
-                            </div>
-                            <div className="grid gap-1.5">
-                                <Label htmlFor="address" className="text-xs">Adresse</Label>
-                                <Input id="address" name="address" placeholder="Rue, Ville" className="bg-muted/20 border-none" required />
-                            </div>
-                            <div className="grid gap-1.5">
-                                <Label htmlFor="max_capacity" className="text-xs">Capacité max</Label>
-                                <Input id="max_capacity" name="max_capacity" type="number" placeholder="5000" className="bg-muted/20 border-none" required />
-                            </div>
-                            <Button type="submit" variant="secondary" className="w-full font-bold">
-                                <Plus size={16} className="mr-2" /> Enregistrer le lieu
-                            </Button>
-                        </form>
+                        <AddPlaceForm />
                     </CardContent>
                 </Card>
 

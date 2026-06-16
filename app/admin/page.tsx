@@ -19,10 +19,10 @@ export default async function AdminPage() {
   const supabaseAdmin = await createAdminClient();
   
   // Statistiques
-  const { data: usersCount } = await supabaseAdmin.from('profiles').select('id', { count: 'exact', head: true });
-  const { data: eventsCount } = await supabaseAdmin.from('events').select('id', { count: 'exact', head: true });
+  const { count: usersCount } = await supabaseAdmin.from('profiles').select('id', { count: 'exact', head: true });
+  const { count: eventsCount } = await supabaseAdmin.from('events').select('id', { count: 'exact', head: true });
   const { data: commands } = await supabaseAdmin.from('commands').select('total_amount');
-  const { data: ticketsCount } = await supabaseAdmin.from('ticket').select('id', { count: 'exact', head: true });
+  const { count: ticketsCount } = await supabaseAdmin.from('ticket').select('id', { count: 'exact', head: true });
   
   // Derniers utilisateurs inscrits
   const { data: recentUsers } = await supabaseAdmin

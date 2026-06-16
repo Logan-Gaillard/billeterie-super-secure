@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { TicketTier } from "@/lib/types";
 import { getEventById, getEventTiers } from "@/lib/services/event.service";
+import Link from "next/link";
 
 import { TicketBookingForm } from "@/components/ticket-booking-form";
 
@@ -17,6 +18,10 @@ export async function EventDetails({ id, user }: { id: string, user: any }) {
   const tiers = event.ticket_tiers || [];
   const minPrice = tiers.length > 0 ? Math.min(...tiers.map(t => t.price)) : 0;
   const remainingTickets = tiers.reduce((acc, curr) => acc + curr.total_inventory, 0);
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price);
+  };
 
   return (
     <div className="flex flex-col md:flex-row gap-12">
@@ -40,7 +45,7 @@ export async function EventDetails({ id, user }: { id: string, user: any }) {
                             </Badge>
                         )}
                         <Badge variant="outline" className="bg-primary text-primary-foreground border-none font-bold">
-                            {minPrice > 0 ? `${minPrice}€` : "Gratuit"}
+                            {minPrice > 0 ? formatPrice(minPrice) : "Gratuit"}
                         </Badge>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">{event.title}</h1>
@@ -133,7 +138,7 @@ export async function EventDetails({ id, user }: { id: string, user: any }) {
         <div className="p-4 rounded-xl border border-dashed border-muted-foreground/20 flex flex-col gap-2 bg-primary/5">
             <span className="text-xs font-bold uppercase text-primary">Sécurité & Confiance</span>
             <p className="text-xs text-muted-foreground">
-                Vos transactions sont protégées. Les billets sont nominatifs et dotés d'un QR code unique.
+                Vos transactions sont protégées. Chaque billet est doté d'un QR code unique garantissant son authenticité et sa validité.
             </p>
         </div>
       </div>
