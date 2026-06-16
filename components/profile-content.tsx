@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { getSessionDetails } from "@/lib/services/auth.service";
 import { getUserCommands } from "@/lib/services/booking.service";
+import { MfaSettings } from "@/components/mfa-settings";
 
 export async function ProfileContent() {
   const { user, profile } = await getSessionDetails();
@@ -13,8 +14,6 @@ export async function ProfileContent() {
 
   const { commands, error } = await getUserCommands(user.id);
 
-  console.log(`Profiles : ${profile}`);
-
   return (
     <div className="flex flex-col gap-12">
       <header className="flex flex-col gap-2">
@@ -24,6 +23,8 @@ export async function ProfileContent() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 flex flex-col gap-6">
+          <MfaSettings />
+
           <h2 className="text-2xl font-bold">Mes Réservations</h2>
           
           {commands && commands.length > 0 ? (
