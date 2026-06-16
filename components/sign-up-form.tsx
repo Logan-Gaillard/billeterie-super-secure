@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { signUpAction } from "@/lib/actions/auth.actions";
 
 export function SignUpForm({
   className,
@@ -31,7 +31,6 @@ export function SignUpForm({
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const supabase = createClient();
     setIsLoading(true);
     setError(null);
 
@@ -41,22 +40,22 @@ export function SignUpForm({
       return;
     }
 
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("firstName", firstName);
+    formData.append("name", name);
+
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/profile`,
-          data: {
-            name: name,
-            first_name: firstName,
-          }
-        },
-      });
-      if (error) throw error;
-      router.push("/auth/sign-up-success");
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "Une erreur est survenue");
+      const result = await signUpAction(formData);
+
+      if (result?.error) {
+        throw new Error(result.error);
+      }
+
+      router.push(`/auth/sign-up-success?email=${encodeURIComponent(email)}`);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Une erreur est survenue");
     } finally {
       setIsLoading(false);
     }

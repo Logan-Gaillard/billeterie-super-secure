@@ -21,6 +21,8 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+import { EnvCheck } from "@/components/env-check";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.className} antialiased`}>
+        <EnvCheck />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
