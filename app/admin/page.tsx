@@ -69,6 +69,7 @@ export default async function AdminPage() {
                     <Button className="justify-start" variant="outline">Gérer les lieux (Places)</Button>
                     <Button className="justify-start" variant="outline">Gérer les utilisateurs</Button>
                     <Button className="justify-start" variant="outline">Consulter les logs système</Button>
+                    <BackupButton />
                     <Button className="justify-start" variant="outline">Gérer les bannissements</Button>
                 </CardContent>
             </Card>
