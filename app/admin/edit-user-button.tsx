@@ -66,6 +66,19 @@ export function EditUserButton({ user }: { user: any }) {
               </div>
 
               <div className="grid gap-1">
+                <label className="text-sm font-medium">Rôle</label>
+                <select 
+                  name="role" 
+                  defaultValue={user.role}
+                  className="h-9 border rounded-md px-3 bg-background"
+                >
+                  <option value="user">Utilisateur</option>
+                  <option value="organisation">Organisateur</option>
+                  {user.role === 'admin' && <option value="admin">Administrateur</option>}
+                </select>
+              </div>
+
+              <div className="grid gap-1">
                 <label className="text-sm font-medium">Nouveau mot de passe (optionnel)</label>
                 <input 
                   type="text" 

@@ -4,17 +4,24 @@ export interface Place {
   name: string;
   address: string;
   max_capacity: number;
+  description: string | null;
+  image_url: string | null;
 }
 
 export interface Event {
   id: number;
   created_at: string;
-  oragnizer: string;
+  organizer: string;
   title: string;
+  short_description: string | null;
+  long_description: string | null;
+  image_url: string | null;
   start_time: string;
   open: boolean;
   place_id: number;
+  owner_id: string;
   place?: Place;
+  ticket_tiers?: TicketTier[];
 }
 
 export interface TicketTier {

@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Event } from "@/lib/types";
 import { getAllEvents } from "@/lib/services/event.service";
@@ -21,45 +22,65 @@ export async function EventList() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {events.map((event: Event) => (
-        <Card key={event.id} className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow border-muted">
-          <div className="aspect-video bg-muted relative">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
-              <span className="bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-bold uppercase tracking-wider">
-                {event.open ? "Ouvert" : "Complet"}
-              </span>
-            </div>
-          </div>
-          <CardHeader>
-            <div className="flex justify-between items-start">
-              <CardTitle className="text-xl font-bold">{event.title}</CardTitle>
-            </div>
-            <CardDescription className="flex flex-col gap-1">
-              <span className="flex items-center gap-1 font-semibold text-primary">
-                {new Date(event.start_time).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-              </span>
-              <span>Organisé par : {event.oragnizer}</span>
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex-1">
-            <div className="flex flex-col gap-2 text-sm">
-              <div className="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                <span>{event.place?.name} - {event.place?.address}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                <span>Capacité: {event.place?.max_capacity} places</span>
+      {events.map((event: Event) => {
+        const minPrice = event.ticket_tiers && event.ticket_tiers.length > 0 
+          ? Math.min(...event.ticket_tiers.map(t => t.price)) 
+          : 0;
+        
+        const remainingTickets = event.ticket_tiers?.reduce((acc, curr) => acc + curr.total_inventory, 0) || 0;
+
+        return (
+          <Card key={event.id} className="flex flex-col overflow-hidden hover:shadow-xl transition-all border-muted group">
+            <div className="aspect-video bg-muted relative overflow-hidden">
+              {event.image_url ? (
+                <img 
+                  src={event.image_url} 
+                  alt={event.title} 
+                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                  <span className="text-4xl">📅</span>
+                </div>
+              )}
+              <div className="absolute top-4 right-4">
+                <Badge className={remainingTickets > 0 ? "bg-green-500 hover:bg-green-600" : "bg-destructive"}>
+                  {remainingTickets > 0 ? `${remainingTickets} places` : "Complet"}
+                </Badge>
               </div>
             </div>
-          </CardContent>
-          <CardFooter className="pt-4 border-t">
-            <Button asChild className="w-full">
-              <Link href={`/events/${event.id}`}>Réserver mes places</Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      ))}
+            <CardHeader>
+              <div className="flex justify-between items-start mb-2">
+                <Badge variant="outline" className="text-[10px] uppercase tracking-widest">{event.organizer}</Badge>
+                <span className="font-black text-primary">{minPrice > 0 ? `Dès ${minPrice}€` : "Gratuit"}</span>
+              </div>
+              <CardTitle className="text-xl font-bold line-clamp-1">{event.title}</CardTitle>
+              <CardDescription className="line-clamp-2 min-h-[40px]">
+                {event.short_description || "Aucune description disponible pour cet évènement."}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex-1">
+              <div className="flex flex-col gap-3 text-sm">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <span className="font-medium text-foreground">
+                    {new Date(event.start_time).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  <span className="line-clamp-1">{event.place?.name} - {event.place?.address}</span>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter className="pt-4 border-t bg-muted/5">
+              <Button asChild className="w-full font-bold">
+                <Link href={`/events/${event.id}`}>Voir les détails</Link>
+              </Button>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
   );
 }

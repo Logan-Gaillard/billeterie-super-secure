@@ -98,6 +98,7 @@ export async function updateUserDetailsAction(userId: string, formData: FormData
   const name = formData.get("name") as string;
   const first_name = formData.get("first_name") as string;
   const password = formData.get("password") as string;
+  const role = formData.get("role") as string;
 
   const supabaseAdmin = getAdminClient();
 
@@ -116,10 +117,13 @@ export async function updateUserDetailsAction(userId: string, formData: FormData
     if (authError) throw new Error(authError.message);
   }
 
-  // 2. Mise à jour du profil public (nom, prénom, email)
+  // 2. Mise à jour du profil public (nom, prénom, email, rôle)
+  const updateData: any = { email, name, first_name };
+  if (role) updateData.role = role;
+
   const { error: dbError } = await supabaseAdmin
     .from("profiles")
-    .update({ email, name, first_name })
+    .update(updateData)
     .eq("id", userId);
 
   if (dbError) throw new Error(dbError.message);

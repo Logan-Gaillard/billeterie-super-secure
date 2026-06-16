@@ -8,7 +8,8 @@ export async function getAllEvents(): Promise<{ events: Event[] | null; error: a
       .from("events")
       .select(`
         *,
-        place:place_id (*)
+        place:place_id (*),
+        ticket_tiers (*)
       `)
       .order("start_time", { ascending: true });
 
@@ -31,7 +32,8 @@ export async function getEventById(id: string): Promise<{ event: Event | null; e
       .from("events")
       .select(`
         *,
-        place:place_id (*)
+        place:place_id (*),
+        ticket_tiers (*)
       `)
       .eq("id", id)
       .single();

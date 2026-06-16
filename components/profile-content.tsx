@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { getSessionDetails } from "@/lib/services/auth.service";
 import { getUserCommands } from "@/lib/services/booking.service";
 import { MfaSettings } from "@/components/mfa-settings";
+import { TicketItem } from "@/components/ticket-item";
 
 export async function ProfileContent() {
   const { user, profile } = await getSessionDetails();
@@ -45,15 +46,7 @@ export async function ProfileContent() {
                   <CardContent className="pt-6">
                     <div className="flex flex-col gap-4">
                         {command.tickets?.map((ticket: any) => (
-                            <div key={ticket.id} className="flex justify-between items-center border-b pb-4 last:border-0 last:pb-0">
-                                <div className="flex flex-col">
-                                    <span className="font-bold">{ticket.tier?.event?.title}</span>
-                                    <span className="text-sm text-muted-foreground">{ticket.tier?.name} - Rang {ticket.seat_row}, Siège {ticket.seat_number}</span>
-                                </div>
-                                <div className="text-right">
-                                    <span className="font-bold">{ticket.tier?.price}€</span>
-                                </div>
-                            </div>
+                            <TicketItem key={ticket.id} ticket={ticket} />
                         ))}
                     </div>
                   </CardContent>
