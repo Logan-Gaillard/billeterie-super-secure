@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getSessionDetails } from "@/lib/services/auth.service";
+import { BackupButton } from "@/components/BackupButton";
 
 export default async function AdminPage() {
   const { user, profile } = await getSessionDetails();
@@ -55,6 +56,7 @@ export default async function AdminPage() {
                     <Button className="justify-start" variant="outline">Gérer les lieux (Places)</Button>
                     <Button className="justify-start" variant="outline">Consulter les logs système</Button>
                     <Button className="justify-start text-destructive hover:bg-destructive/10" variant="outline">Gérer les bannissements</Button>
+                    <BackupButton />
                 </CardContent>
             </Card>
 
